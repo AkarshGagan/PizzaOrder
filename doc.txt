@@ -1,0 +1,482 @@
+npm i eslint vite-plugin-eslint eslint-config-react-app --save-dev
+created a .eslintec.json
+and added below code
+ {
+  "extends": "react-app"
+}
+then in vite.config.js
+//------------------------------------------this
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+});
+//--------------------------to
+//--------------------------------------------this
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import eslint from "vite-plugin-eslint";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react(), eslint()],
+});
+
+
+
+Router
+npm i react router dom
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./ui/Home";
+import Menu from "./features/menu/Menu";
+
+const ⁡⁢⁣⁢𝗿𝗼𝘂𝘁𝗲𝗿⁡ = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/menu",
+    element: <Menu />,
+  },
+]);
+
+function App() {
+  return <RouterProvider router={router}></RouterProvider>;
+}
+export default App;
+
+
+//child route 
+in older verison
+<Route
+                path="app"
+                element={
+                  <ProtectedRoutes>
+                    <AppLayout></AppLayout>
+                  </ProtectedRoutes>
+                }>
+                <Route index element={<Navigate replace to="cities" />} />
+                <Route path="cities" element={<CityList></CityList>}></Route>
+                <Route path="cities/:id" element={<City />} />
+                <Route path="countries" element={<CountryList />}></Route>
+                <Route path="form" element={<Form />}></Route>
+              </Route>
+
+function AppLayout() {
+  const { isAuthenticated } = useAuth();
+  return (
+    <div className={styles.app}>
+      <Sidebar />
+      <Map />
+      {isAuthenticated && <User />}
+    </div>
+  );
+}
+
+function Sidebar() {
+  return (
+    <div className={styles.sidebar}>
+      <Logo></Logo>
+      <AppNav></AppNav>
+      <Outlet></Outlet>
+    </div>
+  );
+}
+
+
+
+//In new version
+const router = createBrowserRouter([
+  {
+    element: <AppLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/menu",
+        element: <Menu />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
+      {
+        path: "/order/new",
+        element: <CreateOrder />,
+      },
+      {
+        path: "/order/:orderId",
+        element: <Order />,
+      },
+    ],
+  },
+]);
+
+function App() {
+  return <RouterProvider router={router}></RouterProvider>;
+}
+export default App;
+
+
+function AppLayout() {
+  return (
+    <div>
+      <Headers />
+      <main>
+        <h1>Content</h1>
+        <Outlet />
+      </main>
+      <CartOverview />
+    </div>
+  );
+}
+
+//To load data required for the component-----------------------------------------
+Menu.jsx
+import { useLoaderData } from "react-router-dom";
+import { getMenu } from "../../services/apiRestaurant";
+
+function Menu() {
+  const menu = ⁡⁢⁣⁢𝘂𝘀𝗲𝗟𝗼𝗮𝗱𝗲𝗿𝗗𝗮𝘁𝗮⁡();
+  console.log(menu);
+  return <h1>Menu</h1>;
+}
+
+export async function ⁡⁢⁣⁢𝗹𝗼𝗮𝗱𝗲𝗿⁡() {
+  const menu = await getMenu();
+  return menu;
+}
+
+export default Menu;
+
+App.jsx
+import Menu, { loader as MenuLoader } from "./features/menu/Menu";
+const router = createBrowserRouter([
+  {
+    element: <AppLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/menu",
+        element: <Menu />,
+        loader: ⁡⁢⁣⁢𝗠𝗲𝗻𝘂𝗟𝗼𝗮𝗱𝗲𝗿⁡,         *
+      },
+    ]}])
+//This is like render as u fetch  previousley its like render the component first and then fecth the data
+
+
+//⁡⁢⁣⁢𝗟𝗼𝗮𝗱𝗶𝗻𝗴⁡
+To check wther the page navigation is pending or idle
+Then we can make use of the methd
+
+  const navigation = ⁡⁢⁣⁢𝘂𝘀𝗲𝗡𝗮𝘃𝗶𝗴𝗮𝘁𝗶𝗼𝗻⁡();
+  console.log(navigation);
+navigation consist of object{state:loading/pending}
+
+//we can include in AppLayout.jsx
+function AppLayout() {
+  const navigation = ⁡⁢⁣⁢𝘂𝘀𝗲𝗡𝗮𝘃𝗶𝗴𝗮𝘁𝗶𝗼𝗻⁡();
+  console.log(navigation);
+
+  if (navigation.state === "loading") {
+    return <div>Loading</div>;
+  }
+
+  return (
+    <div>
+      <Headers />
+      <main>
+        <h1>Content</h1>
+        <Outlet />
+      </main>
+      <CartOverview />
+    </div>
+  );
+}
+
+export default AppLayout;
+so all the child compoennts if loading then will show loading
+
+//To display error----------------------------------------------------
+Include it in top od App Route
+
+const router = createBrowserRouter([
+  {
+    element: <AppLayout />,
+    ⁡⁢⁣⁢𝗲𝗿𝗿𝗼𝗿𝗘𝗹𝗲𝗺𝗲𝗻𝘁⁡: <Error />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      }]}])
+
+
+{data: 
+"Error: No route matches URL \"/menu/wciweg\""
+error: 
+Error: No route matches URL "/menu/wciweg" at getInternalRouterError (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=20f9832a:3437:59) at createRouter (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=20f9832a:1106:17) at createBrowserRouter (http://localhost:5173/node_modules/.vite/deps/react-router-dom.js?v=20f9832a:4932:10) at http://localhost:5173/src/App.jsx?t=1738067753806:25:16
+internal: true
+status: 404
+statusText :"Not Found"}
+
+function NotFound() {
+  const navigate = useNavigate();
+  const error = ⁡⁢⁣⁢𝘂𝘀𝗲𝗥𝗼𝘂𝘁𝗲𝗘𝗿𝗿𝗼𝗿⁡();
+  console.log(error); //object with error details
+
+  return (
+    <div>
+      <h1>Something went wrong 😢</h1>
+      <p>{error.data ||err.message}</p>
+      <button onClick={() => navigate(-1)}>&larr; Go back</button>
+    </div>
+  );
+}
+
+export default NotFound;
+
+//⁡⁢⁣⁢𝘂 𝗰𝗮𝗻 𝗮𝗹𝘀𝗼 𝗵𝗮𝗻𝗱𝗹𝗲 𝗲𝗿𝗿𝗼𝗿 𝗶𝗻 𝗿𝗼𝘂𝘁𝗲 𝗶𝘁𝘀𝗲𝗹𝗳⁡
+  {
+        path: "/menu",
+        element: <Menu />,
+        loader: MenuLoader,
+        errorElement: <Error />,}
+        so it basically bubbles up to top error
+            element: <AppLayout />,
+    errorElement: <Error />,
+    if its not handled in path itself
+
+//-------------------------------------------------------------------------
+input in header will have some query if query is empty then return 
+else navigate to /order/:id
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+function SearchOrder() {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!query) {
+      return;
+    }
+    navigate(`/order/${query}`);
+    setQuery("");
+  }
+  return (
+    <form action="" onSubmit={handleSubmit}>
+      <div>
+        SearchOrder
+        <input type="text" onChange={(e) => setQuery(e.target.value)} />
+      </div>
+    </form>
+  );
+}
+
+export default SearchOrder;
+Then in order/:id we have
+// Test ID: IIDSAT
+
+//order:id
+import { useLoaderData } from "react-router-dom";
+import { getOrder } from "../../services/apiRestaurant";
+import {
+  calcMinutesLeft,
+  formatCurrency,
+  formatDate,
+} from "../../utils/helpers";
+
+function Order() {
+  const order = ⁡⁢⁣⁢𝘂𝘀𝗲𝗟𝗼𝗮𝗱𝗲𝗿𝗗𝗮𝘁𝗮⁡();
+  // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
+  const {
+    id,
+    status,
+    priority,
+    priorityPrice,
+    orderPrice,
+    estimatedDelivery,
+    cart,
+  } = order;
+  const deliveryIn = calcMinutesLeft(estimatedDelivery);
+
+  return (
+    <div>
+      <div>
+        <h2>Status</h2>
+
+        <div>
+          {priority && <span>Priority</span>}
+          <span>{status} order</span>
+        </div>
+      </div>
+
+      <div>
+        <p>
+          {deliveryIn >= 0
+            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
+            : "Order should have arrived"}
+        </p>
+        <p>(Estimated delivery: {formatDate(estimatedDelivery)})</p>
+      </div>
+
+      <div>
+        <p>Price pizza: {formatCurrency(orderPrice)}</p>
+        {priority && <p>Price priority: {formatCurrency(priorityPrice)}</p>}
+        <p>To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}</p>
+      </div>
+    </div>
+  );
+}
+
+export async function loader({ params }) {
+  const order = await getOrder(params.orderId);
+  return order;
+}
+export default Order;
+
+we make use of params to get the order with orderId
+//This is like it will go to 
+ path: "/order/:orderId",
+        element: <Order />,
+        loader: ⁡⁢⁣⁢𝗢𝗿𝗱𝗲𝗿𝘀𝗟𝗼𝗮𝗱𝗲𝗿⁡,
+        errorElement: <Error />,
+then here we have defined the loader
+in that loader
+export async function ⁡⁢⁣⁢𝗹𝗼𝗮𝗱𝗲𝗿⁡({ params }) {
+  const order = await getOrder(params.orderId);
+  return order;
+} we return an order
+That order we are making use in the component
+
+
+//-------------------------------------------------------------------------actionData
+   {
+        path: "/order/new",
+        element: <CreateOrder />,
+        ⁡⁢⁣⁢𝗮𝗰𝘁𝗶𝗼𝗻⁡: createOrderAction,
+   }
+
+import { useState } from "react";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
+import { createOrder } from "../../services/apiRestaurant";
+
+//https://uibakery.io/regex-library/phone-number
+const isValidPhone = (str) =>
+  /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
+    str
+  );
+
+const fakeCart = [
+  {
+    pizzaId: 12,
+    name: "Mediterranean",
+    quantity: 2,
+    unitPrice: 16,
+    totalPrice: 32,
+  },
+  {
+    pizzaId: 6,
+    name: "Vegetale",
+    quantity: 1,
+    unitPrice: 13,
+    totalPrice: 13,
+  },
+  {
+    pizzaId: 11,
+    name: "Spinach and Mushroom",
+    quantity: 1,
+    unitPrice: 15,
+    totalPrice: 15,
+  },
+];
+
+function CreateOrder() {s
+  // const [withPriority, setWithPriority] = useState(false);
+  const navigation = ⁡⁢⁣⁢𝘂𝘀𝗲𝗡𝗮𝘃𝗶𝗴𝗮𝘁𝗶𝗼𝗻⁡();
+  const isSubmitting = navigation.state === "submitting";
+  const cart = fakeCart;
+
+  const formError = ⁡⁢⁣⁢𝘂𝘀𝗲𝗔𝗰𝘁𝗶𝗼𝗻𝗗𝗮𝘁𝗮⁡();
+
+  return (
+    <div>
+      <h2>Ready to order? Lets go!</h2>
+
+      {/* <Form method="POST" action="/order/new" */}
+      {/* This gets binds to the closest route so its ok if we dont define action */}
+      <Form method="POST">
+        <div>
+          <label>First Name</label>
+          <input type="text" name="customer" required />
+        </div>
+
+        <div>
+          <label>Phone number</label>
+          <div>
+            <input type="tel" name="phone" required />
+            {formError?.phone && <p>{formError.phone}</p>}
+          </div>
+        </div>
+
+        <div>
+          <label>Address</label>
+          <div>
+            <input type="text" name="address" required />
+          </div>
+        </div>
+
+        <div>
+          <input
+            type="checkbox"
+            name="priority"
+            id="priority"
+            // value={withPriority}
+            // onChange={(e) => setWithPriority(e.target.checked)}
+          />
+          <label htmlFor="priority">Want to yo give your order priority?</label>
+        </div>
+
+        <div>
+          ⁡⁢⁣⁢<𝗶𝗻𝗽𝘂𝘁 𝘁𝘆𝗽𝗲="𝗵𝗶𝗱𝗱𝗲𝗻" 𝗻𝗮𝗺𝗲="𝗰𝗮𝗿𝘁" 𝘃𝗮𝗹𝘂𝗲={𝗝𝗦𝗢𝗡.𝘀𝘁𝗿𝗶𝗻𝗴𝗶𝗳𝘆(𝗰𝗮𝗿𝘁)} />⁡ //we tried to send some data along with input fields
+          <button disabled={isSubmitting}>
+            {isSubmitting ? "Placing order" : "Order now"}
+          </button>
+        </div>
+      </Form>
+    </div>
+  );
+}
+export async function action({ ⁡⁢⁣⁢𝗿𝗲𝗾𝘂𝗲𝘀𝘁⁡ }) {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+  const order = {
+    ...data,
+    cart: JSON.parse(data.cart),
+    priority: data.priority === "on",
+  };
+  console.log(data);
+  const errors = {};
+  if (!isValidPhone(order.phone)) {
+    errors.phone = "Please give us ypur correct number";
+  }
+  if (Object.keys(errors).length > 0) return errors;
+
+  const newOrder = await createOrder(order);
+  return redirect(`/order/${newOrder.id}`);
+}
+export default CreateOrder;
+This works like first we fill all the input fields in the form then submit on submit we come to this action function
+we check for any errors in form if error then we go back to form componnet catch the error using action data
+if error display erro else we redirect it to /order:id
+in case of loader execution starts from the loader fisrt and then provides the data to component 
+but actiondata is just wired and allows compoent to send some data to perform some action
